@@ -1,29 +1,31 @@
 import { int, mysqlTable, text, timestamp } from 'drizzle-orm/mysql-core'
 
 export const users = mysqlTable('users', {
-	id: int('id').primaryKey().autoincrement(),
-	name: text('name'),
-	email: text('email'),
-	passwordHash: text('passwordHash'),
+	id: int('id').primaryKey().autoincrement().notNull(),
+	name: text('name').notNull(),
+	email: text('email').notNull(),
+	passwordHash: text('passwordHash').notNull(),
 })
 
 export const issues = mysqlTable('issues', {
-	id: int('id').primaryKey().autoincrement(),
-	createdAt: timestamp('createdAt').defaultNow(),
-	updatedAt: timestamp('updatedAt').defaultNow(),
-	title: text('title'),
-	description: text('description'),
-	fromEmail: text('fromEmail'),
-	priority: int('priority'),
-	status: int('status').default(0),
+	id: int('id').primaryKey().autoincrement().notNull(),
+	createdAt: timestamp('createdAt').defaultNow().notNull(),
+	updatedAt: timestamp('updatedAt').defaultNow().notNull(),
+	title: text('title').notNull(),
+	description: text('description').notNull(),
+	fromEmail: text('fromEmail').notNull(),
+	priority: int('priority').notNull(),
+	status: int('status').default(0).notNull(),
 	assignedUser: int('assignedUser').references(() => users.id),
 })
 
 export const comments = mysqlTable('comments', {
-	id: int('id').primaryKey().autoincrement(),
-	issueId: int('issueId').references(() => issues.id),
-	createdAt: timestamp('createdAt').defaultNow(),
-	updatedAt: timestamp('updatedAt').defaultNow(),
-	content: text('content'),
-	type: int('type'),
+	id: int('id').primaryKey().autoincrement().notNull(),
+	issueId: int('issueId')
+		.references(() => issues.id)
+		.notNull(),
+	createdAt: timestamp('createdAt').defaultNow().notNull(),
+	updatedAt: timestamp('updatedAt').defaultNow().notNull(),
+	content: text('content').notNull(),
+	type: int('type').notNull(),
 })
