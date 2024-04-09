@@ -22,7 +22,7 @@ import {
 	FormLabel,
 } from '@/components/ui/form'
 import { insertIssueSchema, InsertIssueSchema } from '@/zod/db/issue'
-import { useRouter } from 'next/navigation'
+import { useToast } from '@/components/ui/use-toast'
 
 const CreateIssueForm = () => {
 	const form = useForm<InsertIssueSchema>({
@@ -30,13 +30,18 @@ const CreateIssueForm = () => {
 		mode: 'all',
 	})
 
-	const router = useRouter()
+	const { toast } = useToast()
 
 	const handleOnSubmit: SubmitHandler<InsertIssueSchema> = async values => {
 		try {
 			await createIssue(values)
 
-      router.replace("/portal/customer")
+			form.setValue('fromEmail', '')
+			form.setValue('title', '')
+			form.setValue('description', '')
+			toast({
+				title: 'Hendvendelse opprettet',
+			})
 		} catch (err) {
 			console.log(err)
 		}

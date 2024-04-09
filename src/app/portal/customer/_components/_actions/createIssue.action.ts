@@ -9,11 +9,9 @@ export const createIssue = async (data: InsertIssueSchema) => {
 		await insertIssueSchema.parseAsync(data)
 
 		await db.insert(issues).values({
+			...data,
 			assignedUser: null,
-			description: data.description,
-			fromEmail: data.fromEmail,
 			priority: parseInt(data.priority),
-			title: data.title,
 		})
 	} catch (err) {
 		console.log(err)
