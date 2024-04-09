@@ -1,0 +1,27 @@
+{
+  "version": "5",
+  "dialect": "mysql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1712646724178,
+      "tag": "0000_stormy_amphibian",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1712646900180,
+      "tag": "0001_charming_baron_zemo",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1712646965505,
+      "tag": "0002_round_nova",
+      "breakpoints": true
+    }
+  ]
+}
