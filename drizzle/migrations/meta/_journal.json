@@ -22,6 +22,20 @@
       "when": 1712646965505,
       "tag": "0002_round_nova",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "5",
+      "when": 1712654940450,
+      "tag": "0003_yellow_shiver_man",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "5",
+      "when": 1712654995802,
+      "tag": "0004_icy_maelstrom",
+      "breakpoints": true
     }
   ]
 }
