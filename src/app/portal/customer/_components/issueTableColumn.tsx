@@ -1,9 +1,10 @@
 'use client'
 
 import { ColumnDef } from '@tanstack/react-table'
+import Link from 'next/link'
 
 export type IssueColumn = {
-	referanse: string
+	referanse: number
 	emne: string
 	innmelder: string
 	status: string
@@ -15,6 +16,14 @@ export const columns: ColumnDef<IssueColumn>[] = [
 	{
 		accessorKey: 'referanse',
 		header: 'Referanse',
+		cell: ({ row }) => (
+			<Link
+				href={`/portal/customer/issue/${row.getValue('referanse')}`}
+				className='underline'
+			>
+				UD-{row.getValue('referanse')}
+			</Link>
+		),
 	},
 	{
 		accessorKey: 'emne',
