@@ -1,32 +1,38 @@
 import { db } from '@/db'
-import { issues } from '@/db/schema'
+import { comments, issues } from '@/db/schema'
 import {
 	IssuePriority,
 	issuePriorityLabels,
 	IssueStatus,
 	issueStatusLabels,
 } from '@/types/db/issue'
-import { eq } from 'drizzle-orm'
+import { desc, eq } from 'drizzle-orm'
 import { notFound } from 'next/navigation'
 import { FC } from 'react'
+import IssueComments from './_components/IssueComments'
 
 type Props = {
 	params: {
-		issueId?: string
+		issueId: string
 	}
 }
 
 const Page: FC<Props> = async ({ params }) => {
-	const issueId = params.issueId
+	let issueId: string | number = params.issueId
 
 	if (!issueId || isNaN(parseInt(issueId))) notFound()
 
+	issueId = parseInt(issueId) as number
+
 	const issue = (
-		await db
-			.select()
-			.from(issues)
-			.where(eq(issues.id, parseInt(issueId)))
+		await db.select().from(issues).where(eq(issues.id, issueId))
 	)[0]
+
+	const issueComments = await db
+		.select()
+		.from(comments)
+		.where(eq(comments.issueId, issueId))
+		.orderBy(desc(comments.createdAt))
 
 	return (
 		<div className='grid grid-cols-5 gap-12'>
@@ -37,21 +43,16 @@ const Page: FC<Props> = async ({ params }) => {
 					<div className='mt-8'>{issue.description}</div>
 				</main>
 
-				{/* <div className='mt-5'>
-				<Tabs defaultValue='internal-comment'>
-					<TabsList>
-						<TabsTrigger value='internal-comment'>
-							Legg til intern kommentar
-						</TabsTrigger>
-						<TabsTrigger value='comment'>Legg till kommentar</TabsTrigger>
-					</TabsList>
-					<TabsContent>Internal</TabsContent>
-					<TabsContent>Comment</TabsContent>
-				</Tabs>
-			</div> */}
+				<IssueComments
+					issueId={issueId}
+					comments={issueComments.map(comment => ({
+						message: comment.content,
+						type: comment.type,
+					}))}
+				/>
 			</div>
 
-			<nav className='border-l flex flex-col gap-y-8 text-xl pl-4'>
+			<aside className='border-l flex flex-col gap-y-8 text-xl pl-4'>
 				<div>Innmelder: {issue.fromEmail}</div>
 
 				<div>Status: {issueStatusLabels[issue.status as IssueStatus]}</div>
@@ -75,7 +76,7 @@ const Page: FC<Props> = async ({ params }) => {
 						dateStyle: 'short',
 					}).format(new Date(issue.updatedAt))}
 				</div>
-			</nav>
+			</aside>
 		</div>
 	)
 }
