@@ -28,19 +28,21 @@ const UpdateAssignedUserClient: FC<Props> = ({
 }) => {
 	return (
 		<Select
-			onValueChange={async (val: string) => {
+			onValueChange={async (val: string | null) => {
 				await updateIssue(
 					issueId,
-					{ assignedUser: parseInt(val) },
+					{ assignedUser: typeof val === 'string' ? parseInt(val) : val },
 					isTableUpdate
 				)
 			}}
-			defaultValue={defaultValue?.toString()}
+			defaultValue={defaultValue ? defaultValue.toString() : null}
 		>
 			<SelectTrigger>
 				<SelectValue placeholder='Tildel' />
 			</SelectTrigger>
 			<SelectContent>
+				<SelectItem value={null}>Ingen</SelectItem>
+
 				{users.map(user => (
 					<SelectItem
 						key={user.id}
