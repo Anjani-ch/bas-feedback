@@ -29,7 +29,15 @@ type Props = {
 const IssuesTable: FC<Props> = async ({ isEmployee }) => {
 	noStore()
 
-	const issuesResult = await db.select().from(issues)
+	const issuesResult = await db
+		.select({
+			issue: issues,
+			user: {
+				name: users.name,
+			},
+		})
+		.from(issues)
+		.leftJoin(users, eq(issues.assignedUser, users.id))
 
 	return (
 		<Table>
@@ -47,87 +55,78 @@ const IssuesTable: FC<Props> = async ({ isEmployee }) => {
 			</TableHeader>
 			<TableBody>
 				{issuesResult.length !== 0 ? (
-					issuesResult.map(async issue => {
-						const assignedUser = issue.assignedUser
-							? (
-									await db
-										.select()
-										.from(users)
-										.where(eq(users.id, issue.assignedUser))
-							  )[0].name
-							: 'Ingen'
-
-						return (
-							<TableRow key={issue.id}>
-								<TableCell>
-									<Link
-										href={`/portal/${
-											isEmployee ? 'employee' : 'customer'
-										}/issue/${issue.id}`}
-										className='underline'
-									>
-										UD-{issue.id}
-									</Link>
-								</TableCell>
-								<TableCell>
-									<Link
-										href={`/portal/${
-											isEmployee ? 'employee' : 'customer'
-										}/issue/${issue.id}`}
-										className='underline'
-									>
-										{issue.title}
-									</Link>
-								</TableCell>
-								<TableCell>{issue.fromEmail}</TableCell>
-								<TableCell>
-									{isEmployee ? (
-										<UpdateAssignedUser
-											isTableUpdate
-											issueId={issue.id}
-											defaultValue={issue.assignedUser || undefined}
-										/>
-									) : (
-										assignedUser
-									)}
-								</TableCell>
-								<TableCell>
-									{isEmployee ? (
-										<UpdateIssueStatus
-											defaultValue={issue.status as IssueStatus}
-											issueId={issue.id}
-										/>
-									) : (
-										issueStatusLabels[issue.status as IssueStatus]
-									)}
-								</TableCell>
-								<TableCell>
-									{isEmployee ? (
-										<UpdateIssuePriority
-											defaultValue={issue.priority as IssuePriority}
-											issueId={issue.id}
-										/>
-									) : (
-										issuePriorityLabels[issue.priority as IssuePriority]
-									)}
-								</TableCell>
-								<TableCell>
-									{new Intl.DateTimeFormat('nb', {
-										day: '2-digit',
-										month: '2-digit',
-										year: '2-digit',
-									}).format(new Date(issue.createdAt))}
-								</TableCell>
-								<TableCell>
-									{new Intl.DateTimeFormat('nb', {
-										day: '2-digit',
-										month: '2-digit',
-										year: '2-digit',
-									}).format(new Date(issue.updatedAt))}
-								</TableCell>
-							</TableRow>
-						)
-					})
+					issuesResult.map(({ issue, user }) => (
+						<TableRow key={issue.id}>
+							<TableCell>
+								<Link
+									href={`/portal/${
+										isEmployee ? 'employee' : 'customer'
+									}/issue/${issue.id}`}
+									className='underline'
+								>
+									UD-{issue.id}
+								</Link>
+							</TableCell>
+							<TableCell>
+								<Link
+									href={`/portal/${
+										isEmployee ? 'employee' : 'customer'
+									}/issue/${issue.id}`}
+									className='underline'
+								>
+									{issue.title}
+								</Link>
+							</TableCell>
+							<TableCell>{issue.fromEmail}</TableCell>
+							<TableCell>
+								{isEmployee ? (
+									<UpdateAssignedUser
+										isTableUpdate
+										issueId={issue.id}
+										defaultValue={issue.assignedUser || undefined}
+									/>
+								) : user ? (
+									user.name
+								) : (
+									'Ingen'
+								)}
+							</TableCell>
+							<TableCell>
+								{isEmployee ? (
+									<UpdateIssueStatus
+										defaultValue={issue.status as IssueStatus}
+										issueId={issue.id}
+									/>
+								) : (
+									issueStatusLabels[issue.status as IssueStatus]
+								)}
+							</TableCell>
+							<TableCell>
+								{isEmployee ? (
+									<UpdateIssuePriority
+										defaultValue={issue.priority as IssuePriority}
+										issueId={issue.id}
+									/>
+								) : (
+									issuePriorityLabels[issue.priority as IssuePriority]
+								)}
+							</TableCell>
+							<TableCell>
+								{new Intl.DateTimeFormat('nb', {
+									day: '2-digit',
+									month: '2-digit',
+									year: '2-digit',
+								}).format(new Date(issue.createdAt))}
+							</TableCell>
+							<TableCell>
+								{new Intl.DateTimeFormat('nb', {
+									day: '2-digit',
+									month: '2-digit',
+									year: '2-digit',
+								}).format(new Date(issue.updatedAt))}
+							</TableCell>
+						</TableRow>
+					))
 				) : (
 					<TableRow>
 						<TableCell
