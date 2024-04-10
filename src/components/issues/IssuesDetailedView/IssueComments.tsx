@@ -1,93 +1,41 @@
 'use client'
 
-import { Button } from '@/components/ui/button'
-import { Textarea } from '@/components/ui/textarea'
 import { cn } from '@/lib/utils'
 import { CommentType } from '@/types/db/comment'
-import { FC, useState } from 'react'
-import { addComment } from './_actions/addComment.action'
+import { FC } from 'react'
+import AddIssueComment, {
+	Props as AddIssueCommentProps,
+} from '../forms/AddIssueComment'
+import { addComment } from '../_actions/addComment.action'
 
 type Comment = {
 	message: string | null
 	type: CommentType
 }
 
-type Props = {
+type Props = Pick<AddIssueCommentProps, 'allowInternalNote'> & {
 	comments: Comment[]
 	issueId: number
-	allowInternalNote?: boolean
 }
 
 const IssueComments: FC<Props> = ({ comments, issueId, allowInternalNote }) => {
-	const [showAddCommentForm, setShowAddCommentForm] = useState(false)
-	const [commentType, setCommentType] = useState<CommentType>()
-
 	return (
 		<>
 			<div className='mt-5 border-b pb-2'>
-				<div className='flex gap-6 mb-3'>
-					{allowInternalNote && (
-						<button
-							className={cn({
-								underline:
-									commentType === CommentType.Internal && showAddCommentForm,
-							})}
-							onClick={() => {
-								setShowAddCommentForm(true)
-								setCommentType(CommentType.Internal)
-							}}
-						>
-							Legg til intern kommentar
-						</button>
-					)}
-					<button
-						className={cn({
-							underline:
-								commentType === CommentType.Dialog && showAddCommentForm,
-						})}
-						onClick={() => {
-							setShowAddCommentForm(true)
-							setCommentType(CommentType.Dialog)
-						}}
-					>
-						Legg til kommentar
-					</button>
-				</div>
+				<AddIssueComment
+					onSubmit={async ({ type, content, close }) => {
+						close()
 
-				{showAddCommentForm && (
-					<form
-						action={async (formData: FormData) => {
-							const content = formData.get('content') as string | null
+						if (!content?.trim()) return
 
-							setShowAddCommentForm(false)
-
-							if (!content?.trim()) return
-
-							await addComment({
-								content: content,
-								type: commentType!,
-								issueId,
-							})
-						}}
-					>
-						<Textarea
-							rows={7}
-							className='resize-none'
-							placeholder='Legg til kommentar...'
-							name='content'
-						/>
-
-						<div className='flex gap-3 mt-3'>
-							<Button type='submit'>Send</Button>
-							<Button
-								variant='secondary'
-								onClick={() => setShowAddCommentForm(false)}
-							>
-								Avbryt
-							</Button>
-						</div>
-					</form>
-				)}
+						await addComment({
+							content,
+							type,
+							issueId,
+						})
+					}}
+					allowInternalNote={allowInternalNote}
+				/>
 			</div>
 
 			<div className='mt-6'>
