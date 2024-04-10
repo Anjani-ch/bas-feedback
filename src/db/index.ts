@@ -8,13 +8,4 @@ const connection = mysql.createConnection({
 	database: process.env.DATABASE_NAME!,
 })
 
-connection.connect(err => {
-	if (err) {
-		console.log(`Error connection to DB: ${err}`)
-		return
-	}
-
-	console.log('Connected to DB')
-})
-
 export const db = drizzle(connection)

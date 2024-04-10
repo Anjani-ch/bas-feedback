@@ -1,9 +1,19 @@
-import { int, mysqlTable, text, timestamp } from 'drizzle-orm/mysql-core'
+import {
+	int,
+	mysqlTable,
+	text,
+	timestamp,
+	varchar,
+} from 'drizzle-orm/mysql-core'
 
 export const users = mysqlTable('users', {
 	id: int('id').primaryKey().autoincrement().notNull(),
 	name: text('name').notNull(),
-	email: text('email').notNull(),
+	email: varchar('email', {
+		length: 256,
+	})
+		.unique()
+		.notNull(),
 	passwordHash: text('passwordHash').notNull(),
 })
 

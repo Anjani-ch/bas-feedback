@@ -36,6 +36,20 @@
       "when": 1712654995802,
       "tag": "0004_icy_maelstrom",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "5",
+      "when": 1712730334090,
+      "tag": "0005_talented_bastion",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "5",
+      "when": 1712730705837,
+      "tag": "0006_striped_weapon_omega",
+      "breakpoints": true
     }
   ]
 }
