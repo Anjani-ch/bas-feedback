@@ -10,7 +10,7 @@ import {
 	SelectValue,
 } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
-import { IssuePriority } from '@/types/db/issue'
+import { IssuePriority, issuePriorityLabels } from '@/types/db/issue'
 import { createIssue } from './_actions/createIssue.action'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -122,13 +122,13 @@ const CreateIssueForm = () => {
 									</FormControl>
 									<SelectContent>
 										<SelectItem value={IssuePriority.Low.toString()}>
-											Lav
+											{issuePriorityLabels[IssuePriority.Low]}
 										</SelectItem>
 										<SelectItem value={IssuePriority.Medium.toString()}>
-											Middels
+											{issuePriorityLabels[IssuePriority.Medium]}
 										</SelectItem>
 										<SelectItem value={IssuePriority.High.toString()}>
-											Høy
+											{issuePriorityLabels[IssuePriority.High]}
 										</SelectItem>
 									</SelectContent>
 								</Select>

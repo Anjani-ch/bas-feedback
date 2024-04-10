@@ -18,7 +18,7 @@ const Page: FC<Props> = async ({ params }) => {
 	return (
 		<IssuesDetailedView
 			issueId={issueId}
-			allowInternalNote
+			isEmployee
 		/>
 	)
 }

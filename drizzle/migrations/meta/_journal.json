@@ -50,6 +50,20 @@
       "when": 1712730705837,
       "tag": "0006_striped_weapon_omega",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "5",
+      "when": 1712742951619,
+      "tag": "0007_white_synch",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "5",
+      "when": 1712743034652,
+      "tag": "0008_supreme_valeria_richards",
+      "breakpoints": true
     }
   ]
 }

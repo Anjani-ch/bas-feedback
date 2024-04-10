@@ -42,7 +42,7 @@ const IssuesTable: FC<Props> = async ({ type }) => {
 			<TableBody>
 				{issuesResult.length !== 0 ? (
 					issuesResult.map(issue => (
-						<TableRow>
+						<TableRow key={issue.id}>
 							<TableCell>
 								<Link
 									href={`/portal/${type}/issue/${issue.id}`}
