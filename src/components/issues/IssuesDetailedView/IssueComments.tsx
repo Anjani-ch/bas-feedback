@@ -15,28 +15,31 @@ type Comment = {
 type Props = {
 	comments: Comment[]
 	issueId: number
+	allowInternalNote?: boolean
 }
 
-const IssueComments: FC<Props> = ({ comments, issueId }) => {
+const IssueComments: FC<Props> = ({ comments, issueId, allowInternalNote }) => {
 	const [showAddCommentForm, setShowAddCommentForm] = useState(false)
 	const [commentType, setCommentType] = useState<CommentType>()
 
 	return (
 		<>
-			<div className='mt-5'>
+			<div className='mt-5 border-b pb-2'>
 				<div className='flex gap-6 mb-3'>
-					<button
-						className={cn({
-							underline:
-								commentType === CommentType.Internal && showAddCommentForm,
-						})}
-						onClick={() => {
-							setShowAddCommentForm(true)
-							setCommentType(CommentType.Internal)
-						}}
-					>
-						Legg til intern kommentar
-					</button>
+					{allowInternalNote && (
+						<button
+							className={cn({
+								underline:
+									commentType === CommentType.Internal && showAddCommentForm,
+							})}
+							onClick={() => {
+								setShowAddCommentForm(true)
+								setCommentType(CommentType.Internal)
+							}}
+						>
+							Legg til intern kommentar
+						</button>
+					)}
 					<button
 						className={cn({
 							underline:
