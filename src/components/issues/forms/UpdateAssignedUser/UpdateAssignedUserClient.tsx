@@ -1,6 +1,5 @@
 'use client'
 
-import { FC } from 'react'
 import {
 	Select,
 	SelectContent,
@@ -8,22 +7,33 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '@/components/ui/select'
-import { updateIssue } from './_actions/updateIssue.action'
+import { FC } from 'react'
+import { updateIssue } from '../_actions/updateIssue.action'
 
-type Props = {
+export type Props = {
 	issueId: number
 	defaultValue?: number
-	users: {
+	users?: {
 		id: number
 		name: string
 	}[]
+	isTableUpdate?: boolean
 }
 
-const UpdateAssignedUser: FC<Props> = ({ defaultValue, users, issueId }) => {
+const UpdateAssignedUserClient: FC<Props> = ({
+	issueId,
+	users = [],
+	defaultValue,
+	isTableUpdate,
+}) => {
 	return (
 		<Select
 			onValueChange={async (val: string) => {
-				await updateIssue(issueId, { assignedUser: parseInt(val) })
+				await updateIssue(
+					issueId,
+					{ assignedUser: parseInt(val) },
+					isTableUpdate
+				)
 			}}
 			defaultValue={defaultValue?.toString()}
 		>
@@ -44,4 +54,4 @@ const UpdateAssignedUser: FC<Props> = ({ defaultValue, users, issueId }) => {
 	)
 }
 
-export default UpdateAssignedUser
+export default UpdateAssignedUserClient

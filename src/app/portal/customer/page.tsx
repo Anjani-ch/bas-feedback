@@ -16,7 +16,7 @@ const Home = async () => {
 					value='all-requests'
 					className='mt-8'
 				>
-					<IssuesTable type='customer' />
+					<IssuesTable />
 				</TabsContent>
 				<TabsContent
 					value='create-request'

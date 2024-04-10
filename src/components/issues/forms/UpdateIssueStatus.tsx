@@ -14,13 +14,18 @@ import { updateIssue } from './_actions/updateIssue.action'
 type Props = {
 	defaultValue: IssueStatus
 	issueId: number
+	isTableUpdate?: boolean
 }
 
-const UpdateIssueStatus: FC<Props> = ({ defaultValue, issueId }) => {
+const UpdateIssueStatus: FC<Props> = ({
+	defaultValue,
+	issueId,
+	isTableUpdate,
+}) => {
 	return (
 		<Select
 			onValueChange={async (val: string) => {
-				await updateIssue(issueId, { status: parseInt(val) })
+				await updateIssue(issueId, { status: parseInt(val) }, isTableUpdate)
 			}}
 			defaultValue={defaultValue.toString()}
 		>

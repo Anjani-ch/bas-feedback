@@ -18,12 +18,15 @@ import {
 import Link from 'next/link'
 import { FC } from 'react'
 import { eq } from 'drizzle-orm'
+import UpdateAssignedUser from './forms/UpdateAssignedUser'
+import UpdateIssueStatus from './forms/UpdateIssueStatus'
+import UpdateIssuePriority from './forms/UpdateIssuePriority'
 
 type Props = {
-	type: 'customer' | 'employee'
+	isEmployee?: boolean
 }
 
-const IssuesTable: FC<Props> = async ({ type }) => {
+const IssuesTable: FC<Props> = async ({ isEmployee }) => {
 	noStore()
 
 	const issuesResult = await db.select().from(issues)
@@ -58,20 +61,55 @@ const IssuesTable: FC<Props> = async ({ type }) => {
 							<TableRow key={issue.id}>
 								<TableCell>
 									<Link
-										href={`/portal/${type}/issue/${issue.id}`}
+										href={`/portal/${
+											isEmployee ? 'employee' : 'customer'
+										}/issue/${issue.id}`}
 										className='underline'
 									>
 										UD-{issue.id}
 									</Link>
 								</TableCell>
-								<TableCell>{issue.title}</TableCell>
-								<TableCell>{issue.fromEmail}</TableCell>
-								<TableCell>{assignedUser}</TableCell>
 								<TableCell>
-									{issueStatusLabels[issue.status as IssueStatus]}
+									<Link
+										href={`/portal/${
+											isEmployee ? 'employee' : 'customer'
+										}/issue/${issue.id}`}
+										className='underline'
+									>
+										{issue.title}
+									</Link>
+								</TableCell>
+								<TableCell>{issue.fromEmail}</TableCell>
+								<TableCell>
+									{isEmployee ? (
+										<UpdateAssignedUser
+											isTableUpdate
+											issueId={issue.id}
+											defaultValue={issue.assignedUser || undefined}
+										/>
+									) : (
+										assignedUser
+									)}
 								</TableCell>
 								<TableCell>
-									{issuePriorityLabels[issue.priority as IssuePriority]}
+									{isEmployee ? (
+										<UpdateIssueStatus
+											defaultValue={issue.status as IssueStatus}
+											issueId={issue.id}
+										/>
+									) : (
+										issueStatusLabels[issue.status as IssueStatus]
+									)}
+								</TableCell>
+								<TableCell>
+									{isEmployee ? (
+										<UpdateIssuePriority
+											defaultValue={issue.priority as IssuePriority}
+											issueId={issue.id}
+										/>
+									) : (
+										issuePriorityLabels[issue.priority as IssuePriority]
+									)}
 								</TableCell>
 								<TableCell>
 									{new Intl.DateTimeFormat('nb', {
@@ -93,7 +131,7 @@ const IssuesTable: FC<Props> = async ({ type }) => {
 				) : (
 					<TableRow>
 						<TableCell
-							colSpan={6}
+							colSpan={8}
 							className='h-24 text-center'
 						>
 							Ingen hendvendelser

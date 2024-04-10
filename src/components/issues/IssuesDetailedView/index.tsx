@@ -9,10 +9,10 @@ import {
 } from '@/types/db/issue'
 import { and, desc, eq } from 'drizzle-orm'
 import IssueComments from './IssueComments'
-import UpdateIssueStatus from './UpdateIssueStatus'
+import UpdateIssueStatus from '../forms/UpdateIssueStatus'
 import { CommentType } from '@/types/db/comment'
-import UpdateIssuePriority from './UpdateIssuePriority'
-import UpdateAssignedUser from './UpdateAssignedUser'
+import UpdateIssuePriority from '../forms/UpdateIssuePriority'
+import UpdateAssignedUser from '../forms/UpdateAssignedUser'
 import Link from 'next/link'
 
 type Props = {
@@ -44,8 +44,6 @@ const IssuesDetailedView: FC<Props> = async ({ issueId, isEmployee }) => {
 			.from(users)
 			.where(eq(users.id, issue.assignedUser || -1))
 	)[0]
-
-	const usersResult = isEmployee ? await db.select().from(users) : []
 
 	return (
 		<>
@@ -84,12 +82,8 @@ const IssuesDetailedView: FC<Props> = async ({ issueId, isEmployee }) => {
 							<div>
 								Tildelt:{' '}
 								<UpdateAssignedUser
-									defaultValue={assignedUser?.id || undefined}
 									issueId={issueId}
-									users={usersResult.map(user => ({
-										id: user.id,
-										name: user.name,
-									}))}
+									defaultValue={assignedUser?.id || undefined}
 								/>
 							</div>
 
