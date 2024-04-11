@@ -1,68 +1,12 @@
 {
   "version": "5",
-  "dialect": "mysql",
+  "dialect": "pg",
   "entries": [
     {
       "idx": 0,
       "version": "5",
-      "when": 1712646724178,
-      "tag": "0000_stormy_amphibian",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "5",
-      "when": 1712646900180,
-      "tag": "0001_charming_baron_zemo",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "5",
-      "when": 1712646965505,
-      "tag": "0002_round_nova",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "5",
-      "when": 1712654940450,
-      "tag": "0003_yellow_shiver_man",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "5",
-      "when": 1712654995802,
-      "tag": "0004_icy_maelstrom",
-      "breakpoints": true
-    },
-    {
-      "idx": 5,
-      "version": "5",
-      "when": 1712730334090,
-      "tag": "0005_talented_bastion",
-      "breakpoints": true
-    },
-    {
-      "idx": 6,
-      "version": "5",
-      "when": 1712730705837,
-      "tag": "0006_striped_weapon_omega",
-      "breakpoints": true
-    },
-    {
-      "idx": 7,
-      "version": "5",
-      "when": 1712742951619,
-      "tag": "0007_white_synch",
-      "breakpoints": true
-    },
-    {
-      "idx": 8,
-      "version": "5",
-      "when": 1712743034652,
-      "tag": "0008_supreme_valeria_richards",
+      "when": 1712836149156,
+      "tag": "0000_silky_tana_nile",
       "breakpoints": true
     }
   ]

@@ -1,15 +1,9 @@
-import {
-	int,
-	mysqlTable,
-	text,
-	timestamp,
-	varchar,
-} from 'drizzle-orm/mysql-core'
+import { pgTable, text, timestamp, varchar, integer, serial } from 'drizzle-orm/pg-core'
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod'
 import { z } from 'zod'
 
-export const users = mysqlTable('users', {
-	id: int('id').primaryKey().autoincrement().notNull(),
+export const users = pgTable('users', {
+	id: serial('id').primaryKey().notNull(),
 	name: text('name').notNull(),
 	email: varchar('email', {
 		length: 256,
@@ -25,16 +19,19 @@ export type UserInsertZodSchema = z.infer<typeof userInsertZodSchema>
 export const userSelectZodSchema = createSelectSchema(users)
 export type UserSelectZodSchema = z.infer<typeof userSelectZodSchema>
 
-export const issues = mysqlTable('issues', {
-	id: int('id').primaryKey().autoincrement().notNull(),
+export const issues = pgTable('issues', {
+	id: serial('id').primaryKey().notNull(),
 	createdAt: timestamp('createdAt').defaultNow().notNull(),
-	updatedAt: timestamp('updatedAt').defaultNow().onUpdateNow().notNull(),
+	updatedAt: timestamp('updatedAt')
+		.defaultNow()
+		.$onUpdate(() => new Date())
+		.notNull(),
 	title: text('title').notNull(),
 	description: text('description').notNull(),
 	fromEmail: text('fromEmail').notNull(),
-	priority: int('priority').notNull(),
-	status: int('status').default(0).notNull(),
-	assignedUser: int('assignedUser').references(() => users.id),
+	priority: integer('priority').notNull(),
+	status: integer('status').default(0).notNull(),
+	assignedUser: integer('assignedUser').references(() => users.id),
 })
 
 export const issueInsertZodSchema = createInsertSchema(issues)
@@ -43,15 +40,18 @@ export type IssueInsertZodSchema = z.infer<typeof issueInsertZodSchema>
 export const issueSelectZodSchema = createSelectSchema(issues)
 export type IssueSelectZodSchema = z.infer<typeof issueInsertZodSchema>
 
-export const comments = mysqlTable('comments', {
-	id: int('id').primaryKey().autoincrement().notNull(),
-	issueId: int('issueId')
+export const comments = pgTable('comments', {
+	id: serial('id').primaryKey().notNull(),
+	issueId: integer('issueId')
 		.references(() => issues.id)
 		.notNull(),
 	createdAt: timestamp('createdAt').defaultNow().notNull(),
-	updatedAt: timestamp('updatedAt').defaultNow().onUpdateNow().notNull(),
+	updatedAt: timestamp('updatedAt')
+		.defaultNow()
+		.$onUpdate(() => new Date())
+		.notNull(),
 	content: text('content').notNull(),
-	type: int('type').notNull(),
+	type: integer('type').notNull(),
 })
 
 export const commentInsertZodSchema = createInsertSchema(comments)

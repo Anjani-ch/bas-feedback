@@ -1,11 +1,21 @@
-import { drizzle } from 'drizzle-orm/mysql2'
-import mysql from 'mysql2'
+import { PostgresJsDatabase, drizzle } from 'drizzle-orm/postgres-js'
+import postgres from 'postgres'
+import * as schema from './schema'
 
-const connection = mysql.createConnection({
-	host: process.env.DATABASE_HOST!,
-	user: process.env.DATABASE_USER,
-	password: process.env.DATABASE_PASSWORD,
-	database: process.env.DATABASE_NAME!,
-})
+declare global {
+	var db: PostgresJsDatabase<typeof schema> | undefined
+}
 
-export const db = drizzle(connection)
+let db: PostgresJsDatabase<typeof schema>
+
+if (process.env.NODE_ENV === 'production') {
+	db = drizzle(postgres(process.env.DATABASE_URL!))
+} else {
+	if (!global.db) {
+		global.db = drizzle(postgres(process.env.DATABASE_URL!))
+	}
+
+	db = global.db
+}
+
+export { db }
