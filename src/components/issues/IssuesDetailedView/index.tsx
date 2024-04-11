@@ -48,8 +48,8 @@ const IssuesDetailedView: FC<Props> = async ({ issueId, isEmployee }) => {
 				Tilbake
 			</Link>
 
-			<div className='grid grid-cols-5 gap-12 mt-5'>
-				<div className='col-span-4'>
+			<div className='grid grid-cols-1 lg:grid-cols-5 gap-12 mt-5'>
+				<div className='lg:col-span-4 order-2 lg:order-1'>
 					<main className='border-b pb-12'>
 						<h2 className='font-semibold text-3xl border-b pb-2'>
 							{issue.title}
@@ -68,7 +68,7 @@ const IssuesDetailedView: FC<Props> = async ({ issueId, isEmployee }) => {
 					/>
 				</div>
 
-				<aside className='border-l flex flex-col gap-y-8 text-lg pl-4'>
+				<aside className='lg:border-l flex flex-col gap-y-8 text-lg lg:pl-4 order-1 lg:order-2'>
 					<div>Innmelder: {issue.fromEmail}</div>
 
 					{isEmployee ? (
