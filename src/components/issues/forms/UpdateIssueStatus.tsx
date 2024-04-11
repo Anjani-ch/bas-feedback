@@ -42,7 +42,7 @@ const UpdateIssueStatus: FC<Props> = ({
 	const [comment, setComment] = useState<{
 		content: string
 		type: CommentType
-	}>()
+	} | null>()
 
 	return (
 		<>
@@ -79,6 +79,8 @@ const UpdateIssueStatus: FC<Props> = ({
 										})
 									}
 
+									setComment(null)
+
 									await updateIssue(
 										issueId,
 										{ status: IssueStatus.Resolved },
@@ -93,6 +95,7 @@ const UpdateIssueStatus: FC<Props> = ({
 								onClick={() => {
 									setSelectValue(defaultValue.toString() as NumericString)
 									setDialogOpen(false)
+									setComment(null)
 								}}
 							>
 								Lukk

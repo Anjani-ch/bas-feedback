@@ -35,13 +35,13 @@ const UpdateAssignedUserClient: FC<Props> = ({
 					isTableUpdate
 				)
 			}}
-			defaultValue={defaultValue ? defaultValue.toString() : null}
+			defaultValue={defaultValue ? defaultValue.toString() : null!}
 		>
 			<SelectTrigger>
 				<SelectValue placeholder='Tildel' />
 			</SelectTrigger>
 			<SelectContent>
-				<SelectItem value={null}>Ingen</SelectItem>
+				<SelectItem value={null!}>Ingen</SelectItem>
 
 				{users.map(user => (
 					<SelectItem
