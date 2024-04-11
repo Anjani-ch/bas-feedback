@@ -1,18 +1,14 @@
 'use server'
 
-import { db } from '@/db'
-import { issues } from '@/db/schema'
+import { createIssueUseCase } from '@/use-cases/issue'
 import { insertIssueSchema, InsertIssueSchema } from '@/zod/db/issue'
+import { createIssue as createIssueData } from '@/data-access/issue'
 
 export const createIssue = async (data: InsertIssueSchema) => {
 	try {
-		await insertIssueSchema.parseAsync(data)
+		const parsed = await insertIssueSchema.parseAsync(data)
 
-		await db.insert(issues).values({
-			...data,
-			assignedUser: null,
-			priority: parseInt(data.priority),
-		})
+		await createIssueUseCase({ createIssue: createIssueData }, parsed)
 	} catch (err) {
 		console.log(err)
 	}

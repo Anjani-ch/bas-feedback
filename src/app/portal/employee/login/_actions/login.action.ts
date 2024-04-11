@@ -1,29 +1,28 @@
 'use server'
 
-import { db } from '@/db'
-import { users } from '@/db/schema'
 import { LoginAuthZodSchema } from '@/zod/auth'
-import { eq } from 'drizzle-orm'
 import bcrypt from 'bcrypt'
 import { getIronSession } from 'iron-session'
 import { cookies } from 'next/headers'
 import { SessionData, sessionOptions } from '@/config/iron-session'
 import { redirect } from 'next/navigation'
+import { getUserByEmailUseCase } from '@/use-cases/user'
+import { getUserByEmail } from '@/data-access/users'
 
 export const login = async (data: LoginAuthZodSchema) => {
-	const usersWithEmail = await db
-		.select()
-		.from(users)
-		.where(eq(users.email, data.email))
+	const user = await getUserByEmailUseCase(
+		{ getUserByEmail },
+		{
+			email: data.email,
+		}
+	)
 
-	if (usersWithEmail.length !== 1)
+	if (!user)
 		return {
 			errors: {
 				email: `Ansatt med e-post "${data.email}" har ikke tilgang`,
 			},
 		}
-
-	const user = usersWithEmail[0]
 
 	if (!(await bcrypt.compare(data.password, user.passwordHash)))
 		return {

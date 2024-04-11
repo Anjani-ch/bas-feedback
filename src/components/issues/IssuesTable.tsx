@@ -1,5 +1,3 @@
-import { db } from '@/db'
-import { issues, users } from '@/db/schema'
 import { unstable_noStore as noStore } from 'next/cache'
 import {
 	Table,
@@ -17,10 +15,11 @@ import {
 } from '@/types/db/issue'
 import Link from 'next/link'
 import { FC } from 'react'
-import { eq } from 'drizzle-orm'
 import UpdateAssignedUser from './forms/UpdateAssignedUser'
 import UpdateIssueStatus from './forms/UpdateIssueStatus'
 import UpdateIssuePriority from './forms/UpdateIssuePriority'
+import { getIssuesWithAssignedUserUseCase } from '@/use-cases/issue'
+import { getIssuesWithAssignedUser } from '@/data-access/issue'
 
 type Props = {
 	isEmployee?: boolean
@@ -29,15 +28,9 @@ type Props = {
 const IssuesTable: FC<Props> = async ({ isEmployee }) => {
 	noStore()
 
-	const issuesResult = await db
-		.select({
-			issue: issues,
-			user: {
-				name: users.name,
-			},
-		})
-		.from(issues)
-		.leftJoin(users, eq(issues.assignedUser, users.id))
+	const issues = await getIssuesWithAssignedUserUseCase({
+		getIssuesWithAssignedUser,
+	})
 
 	return (
 		<Table>
@@ -54,8 +47,8 @@ const IssuesTable: FC<Props> = async ({ isEmployee }) => {
 				</TableRow>
 			</TableHeader>
 			<TableBody>
-				{issuesResult.length !== 0 ? (
-					issuesResult.map(({ issue, user }) => (
+				{issues.length !== 0 ? (
+					issues.map(({ issue, user }) => (
 						<TableRow key={issue.id}>
 							<TableCell>
 								<Link
@@ -82,7 +75,7 @@ const IssuesTable: FC<Props> = async ({ isEmployee }) => {
 								{isEmployee ? (
 									<UpdateAssignedUser
 										isTableUpdate
-										issueId={issue.id}
+										issueId={issue.id!}
 										defaultValue={issue.assignedUser || undefined}
 									/>
 								) : user ? (
@@ -95,7 +88,7 @@ const IssuesTable: FC<Props> = async ({ isEmployee }) => {
 								{isEmployee ? (
 									<UpdateIssueStatus
 										defaultValue={issue.status as IssueStatus}
-										issueId={issue.id}
+										issueId={issue.id!}
 									/>
 								) : (
 									issueStatusLabels[issue.status as IssueStatus]
@@ -105,7 +98,7 @@ const IssuesTable: FC<Props> = async ({ isEmployee }) => {
 								{isEmployee ? (
 									<UpdateIssuePriority
 										defaultValue={issue.priority as IssuePriority}
-										issueId={issue.id}
+										issueId={issue.id!}
 									/>
 								) : (
 									issuePriorityLabels[issue.priority as IssuePriority]
@@ -116,14 +109,14 @@ const IssuesTable: FC<Props> = async ({ isEmployee }) => {
 									day: '2-digit',
 									month: '2-digit',
 									year: '2-digit',
-								}).format(new Date(issue.createdAt))}
+								}).format(new Date(issue.createdAt!))}
 							</TableCell>
 							<TableCell>
 								{new Intl.DateTimeFormat('nb', {
 									day: '2-digit',
 									month: '2-digit',
 									year: '2-digit',
-								}).format(new Date(issue.updatedAt))}
+								}).format(new Date(issue.updatedAt!))}
 							</TableCell>
 						</TableRow>
 					))

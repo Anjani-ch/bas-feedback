@@ -1,8 +1,8 @@
 'use server'
 
-import { db } from '@/db'
-import { comments } from '@/db/schema'
+import { createComment } from '@/data-access/comments'
 import { CommentType } from '@/types/db/comment'
+import { createCommentUseCase } from '@/use-cases/comments'
 import { revalidatePath } from 'next/cache'
 
 type Data = {
@@ -12,11 +12,7 @@ type Data = {
 }
 
 export const addComment = async (data: Data) => {
-	await db.insert(comments).values({
-		content: data.content!,
-		type: data.type,
-		issueId: data.issueId,
-	})
+	await createCommentUseCase({ createComment }, data)
 
 	revalidatePath(`/portal/customers/issue/${data.issueId}`)
 }

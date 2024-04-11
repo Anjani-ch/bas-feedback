@@ -1,8 +1,7 @@
-import { db } from '@/db'
-import { users } from '@/db/schema'
 import { NextRequest, NextResponse } from 'next/server'
 import { z, ZodError } from 'zod'
-import bcrypt from 'bcrypt'
+import { registerUserUseCase } from '@/use-cases/user'
+import { createUser } from '@/data-access/users'
 
 const zodSchema = z.object({
 	name: z.string().min(1),
@@ -22,15 +21,7 @@ export const POST = async (req: NextRequest) => {
 	}
 
 	try {
-		const salt = await bcrypt.genSalt()
-
-		const hash = await bcrypt.hash(result.password, salt)
-
-		await db.insert(users).values({
-			email: result.email,
-			name: result.name,
-			passwordHash: hash,
-		})
+		await registerUserUseCase({ createUser }, result)
 	} catch (err) {
 		return NextResponse.json(err)
 	}

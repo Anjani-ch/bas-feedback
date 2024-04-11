@@ -2,19 +2,20 @@ import { FC } from 'react'
 import UpdateAssignedUserClient, {
 	Props as UpdateAssignedUserClientProps,
 } from './UpdateAssignedUserClient'
-import { db } from '@/db'
-import { users } from '@/db/schema'
+import { getUsersUseCase } from '@/use-cases/user'
+import { getUsers } from '@/data-access/users'
 
 const UpdateAssignedUser: FC<UpdateAssignedUserClientProps> = async ({
 	defaultValue,
 	issueId,
 }) => {
-	const usersResult = await db.select().from(users)
+	const users = await getUsersUseCase({ getUsers })
+
 	return (
 		<UpdateAssignedUserClient
 			defaultValue={defaultValue}
 			issueId={issueId}
-			users={usersResult.map(user => ({
+			users={users.map(user => ({
 				id: user.id,
 				name: user.name,
 			}))}

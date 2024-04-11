@@ -5,7 +5,8 @@ import {
 	timestamp,
 	varchar,
 } from 'drizzle-orm/mysql-core'
-import { createInsertSchema } from 'drizzle-zod'
+import { createInsertSchema, createSelectSchema } from 'drizzle-zod'
+import { z } from 'zod'
 
 export const users = mysqlTable('users', {
 	id: int('id').primaryKey().autoincrement().notNull(),
@@ -17,6 +18,12 @@ export const users = mysqlTable('users', {
 		.notNull(),
 	passwordHash: text('passwordHash').notNull(),
 })
+
+export const userInsertZodSchema = createInsertSchema(users)
+export type UserInsertZodSchema = z.infer<typeof userInsertZodSchema>
+
+export const userSelectZodSchema = createSelectSchema(users)
+export type UserSelectZodSchema = z.infer<typeof userSelectZodSchema>
 
 export const issues = mysqlTable('issues', {
 	id: int('id').primaryKey().autoincrement().notNull(),
@@ -31,6 +38,10 @@ export const issues = mysqlTable('issues', {
 })
 
 export const issueInsertZodSchema = createInsertSchema(issues)
+export type IssueInsertZodSchema = z.infer<typeof issueInsertZodSchema>
+
+export const issueSelectZodSchema = createSelectSchema(issues)
+export type IssueSelectZodSchema = z.infer<typeof issueInsertZodSchema>
 
 export const comments = mysqlTable('comments', {
 	id: int('id').primaryKey().autoincrement().notNull(),
@@ -42,3 +53,9 @@ export const comments = mysqlTable('comments', {
 	content: text('content').notNull(),
 	type: int('type').notNull(),
 })
+
+export const commentInsertZodSchema = createInsertSchema(comments)
+export type CommentInsertZodSchema = z.infer<typeof commentInsertZodSchema>
+
+export const commentSelectZodSchema = createSelectSchema(comments)
+export type CommentSelectZodSchema = z.infer<typeof commentInsertZodSchema>
